@@ -6,4 +6,6 @@ from .models import MenuItem
 class AllMenuItems(generics.ListCreateAPIView):
     queryset=MenuItem.objects.all()
     serializer_class=MenuItemSerializer
-
+class SingleMenuItem(generics.RetrieveAPIView,generics.DestroyAPIView):
+    queryset=MenuItem.objects.all()
+    serializer_class=MenuItemSerializer
