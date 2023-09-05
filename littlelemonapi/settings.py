@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "mainAPI",
     "debug_toolbar",
-    "rest_framework"
+    "rest_framework",
 
 ]
 
