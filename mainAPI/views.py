@@ -10,11 +10,6 @@ from rest_framework import status
 class AllMenuItems(generics.ListCreateAPIView):
     queryset=MenuItem.objects.select_related("category").all()
     serializer_class=MenuItemSerializer
-    def perform_create(self, serializer):
-        serialized_item=MenuItemSerializer(serializer.data,many=True)
-        serialized_item.is_valid(raise_exception=True)
-        serialized_item.save()
-        return super().perform_create(serializer)
     
 class SingleMenuItem(generics.RetrieveAPIView,generics.DestroyAPIView):
     queryset=MenuItem.objects.select_related("category").all()

@@ -9,7 +9,7 @@ class CategorySerializer(serializers.ModelSerializer):
     
 class MenuItemSerializer(serializers.ModelSerializer):
     price_after_tax=serializers.SerializerMethodField(method_name="calculate_tax")
-    category=CategorySerializer()
+    category=CategorySerializer(read_only=True)
     class Meta:
         model=MenuItem
         fields=["id","title","inventory","price","price_after_tax","category"]
