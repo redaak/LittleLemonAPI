@@ -2,29 +2,39 @@ from django.shortcuts import render
 from rest_framework import generics
 from .serializers import MenuItemSerializer
 from .models import MenuItem
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.renderers import TemplateHTMLRenderer
 # Create your views here.
-class AllMenuItems(generics.ListCreateAPIView):
-    queryset=MenuItem.objects.select_related("category").all()
-    serializer_class=MenuItemSerializer
+# class AllMenuItems(generics.ListCreateAPIView):
+#     queryset=MenuItem.objects.select_related("category").all()
+#     serializer_class=MenuItemSerializer
     
-class SingleMenuItem(generics.RetrieveAPIView,generics.DestroyAPIView):
-    queryset=MenuItem.objects.select_related("category").all()
-    serializer_class=MenuItemSerializer
-# @api_view()
-# def AllMenuItems(request):
-#     items=MenuItem.objects.select_related("category").all()
-#     serialized_items=MenuItemSerializer(items,many=True)
-#     return Response(serialized_items.data)
+# class SingleMenuItem(generics.RetrieveAPIView,generics.DestroyAPIView):
+#     queryset=MenuItem.objects.select_related("category").all()
+#     serializer_class=MenuItemSerializer
+@api_view()
+#@renderer_classes([TemplateHTMLRenderer])
+def AllMenuItems(request):
+    items=MenuItem.objects.select_related("category").all()
+    serialized_items=MenuItemSerializer(items,many=True)
+    return Response(serialized_items.data)
 
-# @api_view()
-# def SingleMenuItem(request):
-#     item=MenuItem.objects.select_related("category").all()
-#     serialized_items=MenuItemSerializer(item,many=True)
-#     return Response(serialized_items.data)
+@api_view()
+#@renderer_classes([TemplateHTMLRenderer])
+def SingleMenuItem(request,pk):
+    item=MenuItem.objects.select_related("category").get(pk=pk)
+    serialized_items=MenuItemSerializer(item)
+    return Response(serialized_items.data)
+@api_view() 
+@renderer_classes ([TemplateHTMLRenderer])
+def menu(request):
+    items = MenuItem.objects.select_related('category').all()
+    serialized_item = MenuItemSerializer(items, many=True)
+    return Response({'data':serialized_item.data}, template_name='menu_item.html')
+
 # class AllMenuItems(APIView):
 #     def get(self,request):
 #         items=MenuItem.objects.select_related("category").all()
