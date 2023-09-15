@@ -5,7 +5,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model=Category
         fields=["id","title","slug"]
-       
+        extra_kwargs={
+            'price':{'min_value':2}
+        }
     
 class MenuItemSerializer(serializers.ModelSerializer):
     price_after_tax=serializers.SerializerMethodField(method_name="calculate_tax")

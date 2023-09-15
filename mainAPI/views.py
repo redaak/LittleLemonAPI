@@ -21,12 +21,22 @@ def AllMenuItems(request):
         items=MenuItem.objects.select_related("category").all()
         category_name=request.query_params.get('category')
         to_price=request.query_params.get('to_price')
+        search_name=request.query_params.get('search')
+        ordering_by=request.query_params.get('orderby')
         if category_name:
             items=items.filter(category__slug__istartswith=category_name)
         if to_price:
             items=items.filter(price=to_price)
+        if search_name:
+            items=items.filter(category__title__istartswith=search_name)
+        if ordering_by:
+            ordering_fields=ordering_by.split(",")
+            items=items.order_by(*ordering_fields)
         serialized_items=MenuItemSerializer(items,many=True)
-        return Response(serialized_items.data,status=status.HTTP_200_OK)
+        if serialized_items.data:
+            return Response(serialized_items.data,status=status.HTTP_200_OK)
+        else:
+            return Response(serialized_items.data,status=status.HTTP_404_NOT_FOUND)
     if request.method=='POST':
         serialized_item=MenuItemSerializer(request.data,many=True)
         serialized_item.is_valid(raise_exception=True)
