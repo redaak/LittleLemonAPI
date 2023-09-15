@@ -15,12 +15,23 @@ from rest_framework.renderers import TemplateHTMLRenderer
 # class SingleMenuItem(generics.RetrieveAPIView,generics.DestroyAPIView):
 #     queryset=MenuItem.objects.select_related("category").all()
 #     serializer_class=MenuItemSerializer
-@api_view()
-#@renderer_classes([TemplateHTMLRenderer])
+@api_view(['GET','POST'])
 def AllMenuItems(request):
-    items=MenuItem.objects.select_related("category").all()
-    serialized_items=MenuItemSerializer(items,many=True)
-    return Response(serialized_items.data)
+    if request.method=='GET':
+        items=MenuItem.objects.select_related("category").all()
+        category_name=request.query_params.get('category')
+        to_price=request.query_params.get('to_price')
+        if category_name:
+            items=items.filter(category__slug__istartswith=category_name)
+        if to_price:
+            items=items.filter(price=to_price)
+        serialized_items=MenuItemSerializer(items,many=True)
+        return Response(serialized_items.data,status=status.HTTP_200_OK)
+    if request.method=='POST':
+        serialized_item=MenuItemSerializer(request.data,many=True)
+        serialized_item.is_valid(raise_exception=True)
+        serialized_item.save()
+        return Response(serialized_item.validated_data,status=status.HTTP_201_CREATED)
 
 @api_view()
 #@renderer_classes([TemplateHTMLRenderer])
