@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.renderers import TemplateHTMLRenderer
+from django.core.paginator import Paginator,EmptyPage
 # Create your views here.
 # class AllMenuItems(generics.ListCreateAPIView):
 #     queryset=MenuItem.objects.select_related("category").all()
@@ -23,6 +24,8 @@ def AllMenuItems(request):
         to_price=request.query_params.get('to_price')
         search_name=request.query_params.get('search')
         ordering_by=request.query_params.get('orderby')
+        perpage=request.query_params.get('perpage',default=2)
+        page=request.query_params.get('page',default=1)
         if category_name:
             items=items.filter(category__slug__istartswith=category_name)
         if to_price:
@@ -32,6 +35,11 @@ def AllMenuItems(request):
         if ordering_by:
             ordering_fields=ordering_by.split(",")
             items=items.order_by(*ordering_fields)
+        paginator=Paginator(items,per_page=perpage)
+        try:
+            items=paginator.page(number=page)
+        except EmptyPage:
+            items=[]
         serialized_items=MenuItemSerializer(items,many=True)
         if serialized_items.data:
             return Response(serialized_items.data,status=status.HTTP_200_OK)
