@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.renderers import TemplateHTMLRenderer
 from django.core.paginator import Paginator,EmptyPage
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 # Create your views here.
 # class AllMenuItems(generics.ListCreateAPIView):
 #     queryset=MenuItem.objects.select_related("category").all()
@@ -57,6 +59,10 @@ def SingleMenuItem(request,pk):
     item=MenuItem.objects.select_related("category").get(pk=pk)
     serialized_items=MenuItemSerializer(item)
     return Response(serialized_items.data)
+@api_view()
+@permission_classes([IsAuthenticated])
+def secret(request):
+    return Response('secret message')
 @api_view() 
 @renderer_classes ([TemplateHTMLRenderer])
 def menu(request):

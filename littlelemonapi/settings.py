@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "mainAPI",
     "debug_toolbar",
     "rest_framework",
+    "rest_framework.authtoken",
 
 ]
 
@@ -137,5 +138,8 @@ REST_FRAMEWORK={
         'rest_framework_yaml.renderers.YAMLRenderer',
         'rest_framework_csv.renderers.CSVRenderer',
 
-    ]
+    ],
+    'DEFUALT_AUTHENTICATION_CLASSES':{
+        'rest_framework.authentication.TokenAuthentication'
+    }
 }
