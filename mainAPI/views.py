@@ -69,6 +69,10 @@ def menu(request):
     items = MenuItem.objects.select_related('category').all()
     serialized_item = MenuItemSerializer(items, many=True)
     return Response({'data':serialized_item.data}, template_name='menu_item.html')
+@api_view()
+@permission_classes([IsAuthenticated])
+def manager_view(request):
+    return Response('manager view')
 
 # class AllMenuItems(APIView):
 #     def get(self,request):
