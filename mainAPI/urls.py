@@ -11,6 +11,7 @@ urlpatterns=[
     path('menu',menu),
     path('api-toke-auth',view=obtain_auth_token),
     path('manager',manager_view),
+    path('throttel_check',throtteling_check),
 
 ]
 

@@ -11,6 +11,7 @@ djangorestframework-xml = "*"
 djangorestframework-yaml = "*"
 djangorestframework-csv = "*"
 bleach = "*"
+djoser = "*"
 
 [dev-packages]
 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     "rest_framework",
     "rest_framework.authtoken",
+    "djoser",
 
 ]
 
@@ -52,7 +53,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware"
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "littlelemonapi.urls"
@@ -143,7 +144,13 @@ REST_FRAMEWORK={
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     },
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+ 
+    'DEFAULT_THROTTLE_RATES':{
+        'anon':'2/minute',
+        'user':'2/minute',
+        'ten':'10/minute',
+    }
+}
+DJOSER={
+    "USER_ID_FIELD":"username"
 }

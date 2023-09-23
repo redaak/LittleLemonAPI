@@ -2,14 +2,17 @@ from django.shortcuts import render
 from rest_framework import generics
 from .serializers import MenuItemSerializer
 from .models import MenuItem
-from rest_framework.decorators import api_view, renderer_classes
+from rest_framework.decorators import api_view, renderer_classes,permission_classes,throttle_classes,authentication_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.renderers import TemplateHTMLRenderer
 from django.core.paginator import Paginator,EmptyPage
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication,BasicAuthentication
+from rest_framework.throttling import AnonRateThrottle
+from .throttels import TenCallsPerMinutes
+
 # Create your views here.
 # class AllMenuItems(generics.ListCreateAPIView):
 #     queryset=MenuItem.objects.select_related("category").all()
@@ -70,9 +73,16 @@ def menu(request):
     serialized_item = MenuItemSerializer(items, many=True)
     return Response({'data':serialized_item.data}, template_name='menu_item.html')
 @api_view()
-@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
 def manager_view(request):
     return Response('manager view')
+
+@api_view()
+@authentication_classes([TokenAuthentication])
+@throttle_classes([TenCallsPerMinutes])
+def throtteling_check(request):
+    return Response({"message check":" Succes"})
+
 
 # class AllMenuItems(APIView):
 #     def get(self,request):
